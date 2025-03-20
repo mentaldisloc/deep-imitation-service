@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.mental.disloc.deepimitationservice.dto.ResponseBody;
 import ru.mental.disloc.deepimitationservice.pojo.User;
 
 import java.io.DataInput;
@@ -21,19 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/workload")
-@Tag(
-        name = "Workload imitation",
-        description = "This controller imitate the application workload to the server"
-)
 public class LoadController {
 
     private Map<String, User> users = new HashMap<>();
     ObjectMapper mapper = new ObjectMapper();
+    int idCounter = 0;
 
     @Operation(
             summary = "UserCreation",
-            description = "Simple workload that creating named objects",
+            description = "This method imitate the application workload to the server",
             responses = {
                     @ApiResponse(responseCode = "200", description = "User was created", content = {
                             @Content(mediaType = "application/json")
@@ -42,25 +39,31 @@ public class LoadController {
                             @Content(mediaType = "application/json")
                     })
             })
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody String json) {
+    @PostMapping("/workload")
+    public ResponseEntity<ResponseBody<Integer>> createUser(@RequestBody User json) {
         try {
-            User user = mapper.readValue(json, User.class);
+            User user = mapper.readValue((DataInput) json, User.class);
 
             if (users.containsKey(user.getName())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
             users.put(user.getName(), user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            ResponseBody<Integer> response = new ResponseBody<>(idCounter++, "User " + user.getName() + " created");
+
+            return ResponseEntity.status(200).body(response);
         } catch (JsonParseException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
+            return ResponseEntity.status(400).body(response);
         } catch (JsonMappingException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
+            return ResponseEntity.status(400).body(response);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseBody<Integer> response = new ResponseBody<>(null, "Server error.");
+            return ResponseEntity.status(500).body(response);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
+            return ResponseEntity.status(400).body(response);
         }
     }
 }

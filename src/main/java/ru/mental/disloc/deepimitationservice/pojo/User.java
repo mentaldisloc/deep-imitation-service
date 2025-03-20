@@ -1,5 +1,11 @@
 package ru.mental.disloc.deepimitationservice.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class User {
     private String name;
     private UserInfo info;
@@ -9,19 +15,21 @@ public class User {
         this.info = info;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Getter
+    @Setter
+    static class UserInfo {
+
+        private String sex;
+        private BodyParameters bodyParams;
+        private String lastAction;
     }
 
-    public void setInfo(UserInfo info) {
-        this.info = info;
-    }
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    static class BodyParameters {
 
-    public String getName() {
-        return name;
-    }
-
-    public UserInfo getInfo() {
-        return info;
+        private String height;
+        private String weight;
     }
 }

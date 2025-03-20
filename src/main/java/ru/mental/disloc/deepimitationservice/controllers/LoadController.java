@@ -32,10 +32,13 @@ public class LoadController {
             summary = "UserCreation",
             description = "This method imitate the application workload to the server",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "User was created", content = {
+                    @ApiResponse(responseCode = "200", description = "User was created.", content = {
                             @Content(mediaType = "application/json")
                     }),
-                    @ApiResponse(responseCode = "400", description = "User already exist", content = {
+                    @ApiResponse(responseCode = "400", description = "User already exist or data incorrect.", content = {
+                            @Content(mediaType = "application/json")
+                    }),
+                    @ApiResponse(responseCode = "500", description = "Server error. Application fall down.", content = {
                             @Content(mediaType = "application/json")
                     })
             })

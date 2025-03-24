@@ -5,17 +5,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
-public class ResponseBody<T>{
+public class ResponseBody{
 
-    private T data;
+    private String uuid;
     private String message;
     private LocalDateTime timestamp;
 
-    public ResponseBody(T data, String message) {
-        this.data = data;
+    public ResponseBody(String message) {
+        this.uuid = UUID.randomUUID().toString();
         this.message = message;
         this.timestamp = LocalDateTime.now();
     }

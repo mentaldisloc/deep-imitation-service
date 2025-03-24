@@ -25,8 +25,6 @@ import java.util.Map;
 public class LoadController {
 
     private Map<String, User> users = new HashMap<>();
-    ObjectMapper mapper = new ObjectMapper();
-    int idCounter = 0;
 
     @Operation(
             summary = "UserCreation",
@@ -42,31 +40,10 @@ public class LoadController {
                             @Content(mediaType = "application/json")
                     })
             })
-    @PostMapping("/workload")
-    public ResponseEntity<ResponseBody<Integer>> createUser(@RequestBody User json) {
-        try {
-            User user = mapper.readValue((DataInput) json, User.class);
-
-            if (users.containsKey(user.getName())) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            users.put(user.getName(), user);
-            ResponseBody<Integer> response = new ResponseBody<>(idCounter++, "User " + user.getName() + " created");
-
-            return ResponseEntity.status(200).body(response);
-        } catch (JsonParseException e) {
-            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
-            return ResponseEntity.status(400).body(response);
-        } catch (JsonMappingException e) {
-            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
-            return ResponseEntity.status(400).body(response);
-        } catch (IOException e) {
-            ResponseBody<Integer> response = new ResponseBody<>(null, "Server error.");
-            return ResponseEntity.status(500).body(response);
-        } catch (IllegalArgumentException e) {
-            ResponseBody<Integer> response = new ResponseBody<>(null, "User could not be created. JSON-file incorrect.");
-            return ResponseEntity.status(400).body(response);
-        }
+    @PostMapping(value = "/workload", consumes = "application/json")
+    public ResponseEntity<ResponseBody> createUser(@RequestBody User json) {
+        ResponseBody response = new ResponseBody("jopa");
+        users.put(response.getUuid(), json);
+        return ResponseEntity.status(200).body(response);
     }
 }

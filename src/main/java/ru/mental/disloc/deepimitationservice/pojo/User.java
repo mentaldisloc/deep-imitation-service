@@ -1,5 +1,6 @@
 package ru.mental.disloc.deepimitationservice.pojo;
 
+import com.fasterxml.jackson.annotation.JsonKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,6 @@ public class User {
 
         private String sex;
         private BodyParameters bodyParams;
-        private String lastAction;
     }
 
     @Getter
@@ -29,7 +29,7 @@ public class User {
     @AllArgsConstructor
     static class BodyParameters {
 
-        private String height;
-        private String weight;
+        private int height;
+        private int weight;
     }
 }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -15,6 +17,8 @@ import ru.mental.disloc.deepimitationservice.dto.ResponseBody;
 
 @ControllerAdvice("ru.mental.disloc.deepimitationservice")
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @Operation(
             summary = "handleJsonParseException",
@@ -29,6 +33,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseBody> handleJsonParseException(Exception e) {
 
         ResponseBody response = new ResponseBody("Invalid JSON format: " + e.getMessage());
+        logger.error("Invalid JSON: {}", response);
         return ResponseEntity.status(400).body(response);
     }
 
@@ -45,6 +50,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseBody> handleJsonMappingException(JsonMappingException e) {
 
         ResponseBody response = new ResponseBody("Error mapping JSON to object: " + e.getMessage());
+        logger.error("Error JSON mapping: {}", response);
         return ResponseEntity.status(400).body(response);
     }
 
@@ -62,9 +68,11 @@ public class GlobalExceptionHandler {
 
         if (e instanceof IllegalArgumentException) {
             ResponseBody response = new ResponseBody("Invalid argument: " + e.getMessage());
+            logger.error("Invalid arg: {}", response);
             return ResponseEntity.status(400).body(response);
         } else {
             ResponseBody response = new ResponseBody("Unsupported media type: " + e.getMessage());
+            logger.error("Unsupported type: {}", response);
             return ResponseEntity.status(415).body(response);
         }
     }
@@ -82,6 +90,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseBody> handleRuntimeException(Exception e) {
 
         ResponseBody response = new ResponseBody("Internal server error: " + e.getMessage());
+        logger.error("Server error: {}", response);
         return ResponseEntity.status(500).body(response);
     }
 }

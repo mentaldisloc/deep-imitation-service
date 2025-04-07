@@ -46,9 +46,9 @@ public class LoadController {
     @PostMapping(value = "/workload", consumes = "application/json")
     public ResponseEntity<ResponseBody> createUser(@RequestBody User json) {
 
-        logger.info("Received JSON-file: {}", json);
+        logger.debug("Received JSON-file: {}", json);
         ResponseBody response = new ResponseBody("JSON-file successfully accepted.");
-        logger.info("Processed JSON-file successfully, Response: {}", response);
+        logger.debug("Processed JSON-file successfully, Response: {}", response);
         users.put(response.getUuid(), json);
         return ResponseEntity.status(200).body(response);
     }
